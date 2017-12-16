@@ -1,9 +1,8 @@
 const WebSocket = require('ws');
-const assert = require('assert');
 const app = require('../app');
 
 after(() => {
-    console.log("Closing Server App");
+    console.log('Closing Server App');
     app.close();
 });
 
@@ -13,22 +12,22 @@ describe('Test Endpoint', () => {
         wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
     });
     after(() => {
-        wsTest.close(1001, "After test");
+        wsTest.close(1001, 'After test');
     });
 
     describe('#ping()', () => {
         it('should fail when no auth', done => {
             let wsTestUnAuth = new WebSocket('ws://localhost:' + (process.env.PORT || 8080) + '/test');
             after(() => {
-                wsTestUnAuth.close(1001, "After test");
+                wsTestUnAuth.close(1001, 'After test');
             });
             wsTestUnAuth.on('pong', () => {
-                done("success; false positive");
+                done('success; false positive');
             });
 
             try {
                 wsTestUnAuth.ping('', true, false);
-                done("success; false positive");
+                done('success; false positive');
             } catch (err) {
                 done();
             }
@@ -53,7 +52,7 @@ describe('Test Endpoint', () => {
                 if (message.type === echo.type && message.argument0 === echo.argument0 && message.argument1 === echo.argument1) {
                     done();
                 } else {
-                    done("Echo messages do not match");
+                    done('Echo messages do not match');
                 }
             });
             wsTest.send(JSON.stringify(echo), err => {
@@ -68,7 +67,7 @@ describe('Test Endpoint', () => {
 describe('Board Endpoint', () => {
     const wsBoard = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/board');
     after(() => {
-        wsBoard.close(1001, "After test");
+        wsBoard.close(1001, 'After test');
     });
 
     describe('#ping()', () => {
@@ -85,7 +84,7 @@ describe('Board Endpoint', () => {
 describe('Mobile Endpoint', () => {
     const wsMobile = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/mobile');
     after(() => {
-        wsMobile.close(1001, "After test");
+        wsMobile.close(1001, 'After test');
     });
     describe('#ping()', () => {
         it('should respond with pong', done => {
@@ -101,13 +100,13 @@ describe('Mobile Endpoint', () => {
 describe('Invalid Endpoint', () => {
     const wsInvalid = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/invalid');
     after(() => {
-        wsInvalid.close(1001, "After test");
+        wsInvalid.close(1001, 'After test');
     });
     describe('#ping()', () => {
         it('should not respond with pong', done => {
             try {
                 wsInvalid.ping('', true, false);
-                done("success; false positive");
+                done('success; false positive');
             } catch (err) {
                 done();
             }
