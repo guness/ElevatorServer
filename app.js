@@ -1,0 +1,85 @@
+const WebSocket = require('ws');
+const Auth = require('basic-auth');
+const BoardApp = require('./board/BoardApp');
+const MobileApp = require('./mobile/MobileApp');
+const TestApp = require('./test/TestApp');
+
+const wss = new WebSocket.Server({
+    port: process.env.PORT || 8080,
+    verifyClient: checkAuth
+});
+
+function checkAuth(info, cb) {
+    const user = Auth(info.req);
+    if (user && user.name === 'sinan' && user.pass === 'gunes') {
+        cb(true);
+    } else {
+        cb(false);
+    }
+}
+
+function closeNice(ws, code, message) {
+    ws.send(JSON.stringify({
+        success: false,
+        code: code,
+        reason: message
+    }), () => {
+        ws.close();
+    });
+}
+
+wss.on('connection', (ws, req) => {
+
+        let module;
+        switch (req.url) {
+            case '/board':
+                module = BoardApp;
+                break;
+            case '/mobile':
+                module = MobileApp;
+                break;
+            case '/test':
+                module = TestApp;
+                break;
+            default:
+                module = undefined;
+        }
+
+        if (module) {
+            module.onConnect(ws, req);
+            ws.on('message', data => {
+                const message = JSON.parse(data);
+
+                switch (message.type) {
+                    case undefined:
+                    case null:
+                    case '':
+                        closeNice(ws, 1002, 'Unknown message type');
+                        //TODO: error log
+                        break;
+                    case 'Echo':
+                        ws.send(data);
+                        break;
+                    default:
+                        module.onMessage(ws, req, message);
+                        break;
+                }
+            });
+
+            ws.on('close', () => {
+                module.onClose(ws, req);
+            });
+            ws.on('error', (err) => {
+                console.error('error: ' + err);
+            });
+        } else {
+            closeNice(ws, 1002, 'Unknown device type');
+            //TODO: error log
+        }
+    }
+);
+module.exports = {
+    close() {
+        wss.close()
+    }
+};

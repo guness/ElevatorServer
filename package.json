@@ -1,0 +1,17 @@
+{
+  "name": "elevatorserver",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./app",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "basic-auth": "^2.0.0",
+    "debug": "~2.6.9",
+    "ws": "^3.3.2"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  }
+}
