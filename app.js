@@ -1,8 +1,12 @@
 const WebSocket = require('ws');
 const Auth = require('basic-auth');
+const MySQL = require('./mysql-handler');
+const Message = require('./config/messageTypes');
 const BoardApp = require('./board/BoardApp');
 const MobileApp = require('./mobile/MobileApp');
 const TestApp = require('./test/TestApp');
+
+MySQL.start();
 
 const wss = new WebSocket.Server({
     port: process.env.PORT || 8080,
@@ -11,6 +15,9 @@ const wss = new WebSocket.Server({
 
 function checkAuth(info, cb) {
     const user = Auth(info.req);
+
+    MySQL.query("SELECT 1");
+
     if (user && user.name === 'sinan' && user.pass === 'gunes') {
         cb(true);
     } else {
@@ -58,7 +65,7 @@ wss.on('connection', (ws, req) => {
                         console.error('Unknown message type');
                         //TODO: error log
                         break;
-                    case 'Echo':
+                    case Message.ECHO:
                         ws.send(data);
                         break;
                     default:

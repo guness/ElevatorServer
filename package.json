@@ -9,6 +9,7 @@
   "dependencies": {
     "basic-auth": "^2.0.0",
     "debug": "~2.6.9",
+    "mysql": "^2.15.0",
     "ws": "^3.3.2"
   },
   "devDependencies": {

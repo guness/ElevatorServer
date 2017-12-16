@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const app = require('../app');
+const Message = require('../config/messageTypes');
 
 after(() => {
     console.log('Closing Server App');
@@ -43,7 +44,7 @@ describe('Test Endpoint', () => {
     describe('#echo()', () => {
         it('should echo', done => {
             const echo = {
-                type: 'Echo',
+                type: Message.ECHO,
                 argument0: true,
                 argument1: 10
             };

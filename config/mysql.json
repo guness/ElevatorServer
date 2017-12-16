@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "user": "elevator",
+  "password": "elevator",
+  "database": "elevator"
+}
