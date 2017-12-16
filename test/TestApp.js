@@ -1,6 +1,6 @@
 module.exports = {
-    onConnect(ws, req) {
-        ws.send('TestApp');
+    onConnect(username, ws, req) {
+        //ws.send('TestApp, Hello: ' + username);
     },
     onMessage(ws, req, message) {
 

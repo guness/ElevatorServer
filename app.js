@@ -29,7 +29,7 @@ function closeNice(ws, code, message) {
 }
 
 wss.on('connection', (ws, req) => {
-
+        const user = Auth(req);
         let module;
         switch (req.url) {
             case '/board':
@@ -46,7 +46,7 @@ wss.on('connection', (ws, req) => {
         }
 
         if (module) {
-            module.onConnect(ws, req);
+            module.onConnect(user.name, ws, req);
             ws.on('message', data => {
                 const message = JSON.parse(data);
 
@@ -55,6 +55,7 @@ wss.on('connection', (ws, req) => {
                     case null:
                     case '':
                         closeNice(ws, 1002, 'Unknown message type');
+                        console.error('Unknown message type');
                         //TODO: error log
                         break;
                     case 'Echo':
@@ -74,6 +75,7 @@ wss.on('connection', (ws, req) => {
             });
         } else {
             closeNice(ws, 1002, 'Unknown device type');
+            console.error('Unknown device type for url: ' + req.url);
             //TODO: error log
         }
     }

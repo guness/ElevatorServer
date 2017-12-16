@@ -3,18 +3,22 @@ const assert = require('assert');
 const app = require('../app');
 
 after(() => {
+    console.log("Closing Server App");
     app.close();
 });
 
 describe('Test Endpoint', () => {
-    const wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
+    let wsTest;
+    before(() => {
+        wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
+    });
     after(() => {
         wsTest.close(1001, "After test");
     });
 
     describe('#ping()', () => {
         it('should fail when no auth', done => {
-            const wsTestUnAuth = new WebSocket('ws://localhost:' + (process.env.PORT || 8080) + '/test');
+            let wsTestUnAuth = new WebSocket('ws://localhost:' + (process.env.PORT || 8080) + '/test');
             after(() => {
                 wsTestUnAuth.close(1001, "After test");
             });
@@ -38,7 +42,7 @@ describe('Test Endpoint', () => {
         });
     });
     describe('#echo()', () => {
-        it('should reply', done => {
+        it('should echo', done => {
             const echo = {
                 type: 'Echo',
                 argument0: true,
@@ -68,7 +72,6 @@ describe('Board Endpoint', () => {
     });
 
     describe('#ping()', () => {
-        //TODO: implement AUTH TEST HERE
         it('should respond with pong', done => {
             wsBoard.on('pong', () => {
                 done();
