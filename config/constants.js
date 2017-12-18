@@ -6,6 +6,5 @@ module.exports = {
         MOBILE: `${DB_PREFIX}mobile`,
         BOARD: `${DB_PREFIX}board`,
         BOARD_GROUP: `${DB_PREFIX}boardGroup`,
-        MOBILE_GROUP: `${DB_PREFIX}mobileGroup`
     }
 };

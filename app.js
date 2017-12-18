@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
 const Auth = require('basic-auth');
 const Util = require('util');
+const Constants = require('./config/constants');
 const MySQL = require('./utils/mysql-handler');
 const Message = require('./config/messageTypes');
 const BoardApp = require('./board/BoardApp');
@@ -21,10 +22,16 @@ MySQL.start().then(() => {
 
 function checkAuth(info, cb) {
     const user = Auth(info.req);
-    //MySQL.query("SELECT 1");
-
-    if (user && user.name === 'sinan' && user.pass === 'gunes') {
-        cb(true);
+    if (user) {
+        MySQL.query('INSERT INTO ?? (username, token) VALUES (?, ?) ON DUPLICATE KEY UPDATE token=?;',
+            [Constants.tableNames.MOBILE, user.name, user.pass, user.pass])
+            .then(() => {
+                cb(true);
+            })
+            .catch(err => {
+                cb(false);
+                console.error('Error inserting user: ' + err);
+            });
     } else {
         cb(false);
     }
