@@ -1,22 +1,27 @@
 const WebSocket = require('ws');
 const Auth = require('basic-auth');
-const MySQL = require('./mysql-handler');
+const Util = require('util');
+const MySQL = require('./utils/mysql-handler');
 const Message = require('./config/messageTypes');
 const BoardApp = require('./board/BoardApp');
 const MobileApp = require('./mobile/MobileApp');
 const TestApp = require('./test/TestApp');
+const EventEmitter = require('events');
 
-MySQL.start();
+const state = new EventEmitter({});
 
 const wss = new WebSocket.Server({
     port: process.env.PORT || 8080,
     verifyClient: checkAuth
 });
 
+MySQL.start().then(() => {
+    state.emit('ready');
+});
+
 function checkAuth(info, cb) {
     const user = Auth(info.req);
-
-    MySQL.query("SELECT 1");
+    //MySQL.query("SELECT 1");
 
     if (user && user.name === 'sinan' && user.pass === 'gunes') {
         cb(true);
@@ -87,8 +92,11 @@ wss.on('connection', (ws, req) => {
         }
     }
 );
+
 module.exports = {
+    state,
     close() {
-        wss.close()
+        wss.close();
+        MySQL.end();
     }
 };

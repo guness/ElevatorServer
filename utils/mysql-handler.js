@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const mysqlAuth = require('./config/mysql');
+const mysqlAuth = require('../config/mysql');
 
 let connection = null;
 
@@ -32,6 +32,7 @@ const MysqlHandler = {
     },
     end() {
         if (connection && connection.state === 'authenticated') {
+            console.log('MySQL server connection closing!');
             connection.end();
         }
     },

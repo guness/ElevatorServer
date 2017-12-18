@@ -2,35 +2,55 @@ const WebSocket = require('ws');
 const app = require('../app');
 const Message = require('../config/messageTypes');
 
+before(done => {
+    app.state.on('ready', () => {
+        done();
+    });
+});
+
 after(() => {
     console.log('Closing Server App');
     app.close();
 });
 
 describe('Test Endpoint', () => {
-    let wsTest;
-    before(() => {
-        wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
-    });
+    let wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
     after(() => {
-        wsTest.close(1001, 'After test');
+        if (wsTest.readyState !== WebSocket.CLOSED && wsTest.readyState !== WebSocket.CLOSING) {
+            wsTest.close(1001, 'After test');
+        }
     });
-
     describe('#ping()', () => {
         it('should fail when no auth', done => {
             let wsTestUnAuth = new WebSocket('ws://localhost:' + (process.env.PORT || 8080) + '/test');
             after(() => {
                 wsTestUnAuth.close(1001, 'After test');
             });
+            wsTestUnAuth.on('error', err => {
+                if (err) {
+                    done();
+                }
+            });
             wsTestUnAuth.on('pong', () => {
                 done('success; false positive');
             });
 
-            try {
-                wsTestUnAuth.ping('', true, false);
-                done('success; false positive');
-            } catch (err) {
-                done();
+            if (wsTestUnAuth.readyState === WebSocket.OPEN) {
+                sendData();
+            } else {
+                wsTestUnAuth.on('open', () => {
+                    sendData();
+                });
+            }
+
+            function sendData() {
+                try {
+                    wsTestUnAuth.ping('', false, false);
+                    done('success; false positive');
+                } catch (err) {
+                    console.log(err);
+                    done();
+                }
             }
         });
         it('should respond with pong', done => {
@@ -38,7 +58,13 @@ describe('Test Endpoint', () => {
                 done();
             });
 
-            wsTest.ping('', false, false)
+            if (wsTest.readyState === WebSocket.OPEN) {
+                wsTest.ping('', false, false);
+            } else {
+                wsTest.on('open', () => {
+                    wsTest.ping('', false, false);
+                });
+            }
         });
     });
     describe('#echo()', () => {
@@ -56,11 +82,22 @@ describe('Test Endpoint', () => {
                     done('Echo messages do not match');
                 }
             });
-            wsTest.send(JSON.stringify(echo), err => {
-                if (err) {
-                    done(err);
-                }
-            });
+
+            if (wsTest.readyState === WebSocket.OPEN) {
+                sendData();
+            } else {
+                wsTest.on('open', () => {
+                    sendData();
+                });
+            }
+
+            function sendData() {
+                wsTest.send(JSON.stringify(echo), err => {
+                    if (err) {
+                        done(err);
+                    }
+                });
+            }
         });
     });
 });
@@ -68,16 +105,23 @@ describe('Test Endpoint', () => {
 describe('Board Endpoint', () => {
     const wsBoard = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/board');
     after(() => {
-        wsBoard.close(1001, 'After test');
+        if (wsBoard.readyState !== WebSocket.CLOSED && wsBoard.readyState !== WebSocket.CLOSING) {
+            wsBoard.close(1001, 'After test');
+        }
     });
-
     describe('#ping()', () => {
         it('should respond with pong', done => {
             wsBoard.on('pong', () => {
                 done();
             });
 
-            wsBoard.ping('', false, false)
+            if (wsBoard.readyState === WebSocket.OPEN) {
+                wsBoard.ping('', false, false);
+            } else {
+                wsBoard.on('open', () => {
+                    wsBoard.ping('', false, false);
+                });
+            }
         });
     });
 });
@@ -93,7 +137,13 @@ describe('Mobile Endpoint', () => {
                 done();
             });
 
-            wsMobile.ping('', false, false)
+            if (wsMobile.readyState === WebSocket.OPEN) {
+                wsMobile.ping('', false, false);
+            } else {
+                wsMobile.on('open', () => {
+                    wsMobile.ping('', false, false);
+                });
+            }
         });
     });
 });
