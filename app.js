@@ -17,7 +17,14 @@ const wss = new WebSocket.Server({
 });
 
 MySQL.start().then(() => {
-    state.emit('ready');
+    MySQL.query('SELECT 1;')
+        .then(() => {
+            state.emit('ready');
+        })
+        .catch(err => {
+            state.emit('error');
+            console.error('Error querying select 1 on DB: ' + err)
+        });
 });
 
 function checkAuth(info, cb) {
