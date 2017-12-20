@@ -1,0 +1,11 @@
+{
+  "_type": "Echo",
+  "version": 2,
+  "any": 1,
+  "valid": "Lorem ipsum dolor sit amet",
+  "json": {
+    "can": true,
+    "be": null,
+    "sent": 1.4
+  }
+}

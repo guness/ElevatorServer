@@ -1,0 +1,9 @@
+{
+  "_type": "UpdateState",
+  "version": 2,
+  "state": {
+    "floor": 5,
+    "busy": false,
+    "direction": "UP"
+  }
+}

@@ -1,3 +1,5 @@
+'use strict';
+
 const DB_PREFIX = 'elv_';
 
 module.exports = {

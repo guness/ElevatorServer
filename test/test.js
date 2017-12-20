@@ -1,3 +1,5 @@
+'use strict';
+
 const WebSocket = require('ws');
 const app = require('../app');
 const Message = require('../config/messageTypes');
@@ -71,13 +73,13 @@ describe('Test Endpoint', () => {
     describe('#echo()', () => {
         it('should echo', done => {
             const echo = {
-                type: Message.ECHO,
+                _type: Message.ECHO,
                 argument0: true,
                 argument1: 10
             };
             wsTest.on('message', data => {
                 const message = JSON.parse(data);
-                if (message.type === echo.type && message.argument0 === echo.argument0 && message.argument1 === echo.argument1) {
+                if (message._type === echo._type && message.argument0 === echo.argument0 && message.argument1 === echo.argument1) {
                     done();
                 } else {
                     done('Echo messages do not match');

@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
 const Auth = require('basic-auth');
 const Util = require('util');
+const Moment = require('moment');
 const Constants = require('./config/constants');
 const MySQL = require('./utils/mysql-handler');
 const Message = require('./config/messageTypes');
@@ -23,16 +24,17 @@ MySQL.start().then(() => {
         })
         .catch(err => {
             state.emit('error');
-            console.error('Error querying select 1 on DB: ' + err)
+            console.error(Moment().format() + ' Error querying select 1 on DB: ' + err)
         });
 });
 
 function checkAuth(info, cb) {
-    let module = findModule(info.req.url);
+    const module = findModule(info.req.url);
     const user = Auth(info.req);
 
     if (module) {
         if (user) {
+            user.ip = info.req.connection.remoteAddress;
             module.onAuth(user, cb);
         } else {
             cb(false);
@@ -69,36 +71,36 @@ wss.on('connection', (ws, req) => {
         let module = findModule(req.url);
         if (module) {
             const user = Auth(req);
-            module.onConnect(user.name, ws, req);
+            module.onConnect(user, ws, req);
             ws.on('message', data => {
                 const message = JSON.parse(data);
 
-                switch (message.type) {
+                switch (message._type) {
                     case undefined:
                     case null:
                     case '':
                         closeNice(ws, 1002, 'Unknown message type');
-                        console.error('Unknown message type');
+                        console.error(Moment().format() + ' Unknown message type');
                         //TODO: error log
                         break;
                     case Message.ECHO:
                         ws.send(data);
                         break;
                     default:
-                        module.onMessage(ws, req, message);
+                        module.onMessage(user, ws, req, message);
                         break;
                 }
             });
 
             ws.on('close', () => {
-                module.onClose(ws, req);
+                module.onClose(user, ws, req);
             });
-            ws.on('error', (err) => {
-                console.error('error: ' + err);
+            ws.on('error', err => {
+                console.error(Moment().format() + ' error: ' + err);
             });
         } else {
             closeNice(ws, 1002, 'Unknown device type');
-            console.error('Unknown device type for url: ' + req.url);
+            console.error(Moment().format() + ' Unknown device type for url: ' + req.url);
             //TODO: error log
         }
     }
