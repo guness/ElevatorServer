@@ -56,6 +56,7 @@ module.exports = {
     },
     onClose(user, ws, req) {
         mobileMap.delete(user.name);
+        console.debug(Moment().format() + ' Total Mobiles connected: ' + mobileMap.size + ' Mobile disconnected: ' + user.name);
     },
     onAuth(user, cb) {
         MySQL.query('INSERT INTO ?? (username, token, ip) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE token=?, ip=?;',
