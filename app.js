@@ -28,17 +28,15 @@ MySQL.start().then(() => {
 });
 
 function checkAuth(info, cb) {
+    let module = findModule(info.req.url);
     const user = Auth(info.req);
-    if (user) {
-        MySQL.query('INSERT INTO ?? (username, token) VALUES (?, ?) ON DUPLICATE KEY UPDATE token=?;',
-            [Constants.tableNames.MOBILE, user.name, user.pass, user.pass])
-            .then(() => {
-                cb(true);
-            })
-            .catch(err => {
-                cb(false);
-                console.error('Error inserting user: ' + err);
-            });
+
+    if (module) {
+        if (user) {
+            module.onAuth(user, cb);
+        } else {
+            cb(false);
+        }
     } else {
         cb(false);
     }
@@ -54,24 +52,23 @@ function closeNice(ws, code, message) {
     });
 }
 
-wss.on('connection', (ws, req) => {
-        const user = Auth(req);
-        let module;
-        switch (req.url) {
-            case '/board':
-                module = BoardApp;
-                break;
-            case '/mobile':
-                module = MobileApp;
-                break;
-            case '/test':
-                module = TestApp;
-                break;
-            default:
-                module = undefined;
-        }
+function findModule(url) {
+    switch (url) {
+        case '/board':
+            return BoardApp;
+        case '/mobile':
+            return MobileApp;
+        case '/test':
+            return TestApp;
+        default:
+            return undefined;
+    }
+}
 
+wss.on('connection', (ws, req) => {
+        let module = findModule(req.url);
         if (module) {
+            const user = Auth(req);
             module.onConnect(user.name, ws, req);
             ws.on('message', data => {
                 const message = JSON.parse(data);

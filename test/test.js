@@ -15,6 +15,9 @@ after(() => {
 
 describe('Test Endpoint', () => {
     let wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
+    wsTest.on('error', err => {
+        console.error("Error on 'Test Endpoint' connection: " + err);
+    });
     after(() => {
         if (wsTest.readyState !== WebSocket.CLOSED && wsTest.readyState !== WebSocket.CLOSING) {
             wsTest.close(1001, 'After test');
@@ -26,10 +29,8 @@ describe('Test Endpoint', () => {
             after(() => {
                 wsTestUnAuth.close(1001, 'After test');
             });
-            wsTestUnAuth.on('error', err => {
-                if (err) {
-                    done();
-                }
+            wsTestUnAuth.on('error', () => {
+                done();
             });
             wsTestUnAuth.on('pong', () => {
                 done('success; false positive');
@@ -109,6 +110,9 @@ describe('Board Endpoint', () => {
             wsBoard.close(1001, 'After test');
         }
     });
+    wsBoard.on('error', err => {
+        console.error("Error on 'Board Endpoint' connection: " + err);
+    });
     describe('#ping()', () => {
         it('should respond with pong', done => {
             wsBoard.on('pong', () => {
@@ -131,6 +135,9 @@ describe('Mobile Endpoint', () => {
     after(() => {
         wsMobile.close(1001, 'After test');
     });
+    wsMobile.on('error', err => {
+        console.error("Error on 'Mobile Endpoint' connection: " + err);
+    });
     describe('#ping()', () => {
         it('should respond with pong', done => {
             wsMobile.on('pong', () => {
@@ -152,6 +159,10 @@ describe('Invalid Endpoint', () => {
     const wsInvalid = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/invalid');
     after(() => {
         wsInvalid.close(1001, 'After test');
+    });
+    wsInvalid.on('error', err => {
+        // We can ignore errors here.
+        // console.log("Error on 'Invalid Endpoint' connection: " + err);
     });
     describe('#ping()', () => {
         it('should not respond with pong', done => {
