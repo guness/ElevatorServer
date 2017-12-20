@@ -44,7 +44,7 @@ module.exports = {
                         console.info(Moment().format() + ' Cannot update Mobile: ' + user.name);
                     }
                 });
-                console.debug(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
+                console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.RELAY_ORDER:
                 //TODO: RELAY_ORDER
@@ -56,7 +56,7 @@ module.exports = {
     },
     onClose(user, ws, req) {
         mobileMap.delete(user.name);
-        console.debug(Moment().format() + ' Total Mobiles connected: ' + mobileMap.size + ' Mobile disconnected: ' + user.name);
+        console.info(Moment().format() + ' Total Mobiles connected: ' + mobileMap.size + ' Mobile disconnected: ' + user.name);
     },
     onAuth(user, cb) {
         MySQL.query('INSERT INTO ?? (username, token, ip) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE token=?, ip=?;',

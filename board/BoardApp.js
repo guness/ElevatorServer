@@ -40,7 +40,7 @@ module.exports = {
     onClose(user, ws, req) {
         updateState(user.name, {online: false});
         boardMap.delete(user.name);
-        console.debug(Moment().format() + ' Total Boards connected: ' + boardMap.size + ' Board disconnected: ' + user.name);
+        console.info(Moment().format() + ' Total Boards connected: ' + boardMap.size + ' Board disconnected: ' + user.name);
     },
     onAuth(user, cb) {
         MySQL.query('SELECT * FROM ?? WHERE username = ?', [Constants.tableNames.BOARD, user.name])
