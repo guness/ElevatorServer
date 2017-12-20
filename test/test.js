@@ -130,6 +130,22 @@ describe('Board Endpoint', () => {
             }
         });
     });
+    describe('#UpdateState', () => {
+        it('should be sent successfully', done => {
+            const message = {
+                "_type": Message.UPDATE_STATE,
+                "version": 2,
+                "state": {
+                    "floor": 5,
+                    "busy": false,
+                    "direction": "UP"
+                }
+            };
+            wsBoard.send(JSON.stringify(message), err => {
+                done(err);
+            })
+        });
+    });
 });
 
 describe('Mobile Endpoint', () => {

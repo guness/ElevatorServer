@@ -30,7 +30,7 @@ module.exports = {
             case Message.UPDATE_STATE:
                 message.online = true;
                 updateState(user.name, message);
-                console.warn(Moment().format() + ' Updating Board state: ' + JSON.stringify(message));
+                console.info(Moment().format() + ' Updating Board state: ' + JSON.stringify(message));
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Board message: ' + JSON.stringify(message));

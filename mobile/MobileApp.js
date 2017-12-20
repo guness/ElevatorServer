@@ -11,18 +11,26 @@ const mobileMap = new Map();
 BoardApp.stateEmitter.on(Message.UPDATE_STATE, (device, state) => {
     for (let mobile in mobileMap.values()) {
         if (mobile.user.device === device) {
-            if (mobile.ws.readyState === WebSocket.OPEN) {
-                mobile.ws.send(state, err => {
-                    if (err) {
-                        console.info(Moment().format() + ' Cannot update Mobile: ' + mobile.user.name);
-                    }
-                });
-            } else {
-                console.warn(Moment().format() + ' Mobile has been disconnected but still in memory: ' + mobile.user.name);
-            }
+            sendState(mobile.user.name, mobile.ws, state);
         }
     }
 });
+
+function sendState(username, ws, state) {
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send({
+            "_type": Message.UPDATE_STATE,
+            "version": 2,
+            "state": state
+        }, err => {
+            if (err) {
+                console.warn(Moment().format() + ' Cannot update Mobile: ' + username + ' err: ' + err);
+            }
+        });
+    } else {
+        console.warn(Moment().format() + ' Cannot update Mobile: ' + username + ' since socket is not OPEN');
+    }
+}
 
 module.exports = {
     onConnect(user, ws, req) {
@@ -35,15 +43,7 @@ module.exports = {
             case Message.LISTEN_DEVICE:
                 user.device = message.device;
                 let state = BoardApp.getState(user.device);
-                ws.send({
-                    "_type": "UpdateState",
-                    "version": 2,
-                    "state": state
-                }, err => {
-                    if (err) {
-                        console.info(Moment().format() + ' Cannot update Mobile: ' + user.name);
-                    }
-                });
+                sendState(user.name, ws, state);
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.RELAY_ORDER:
