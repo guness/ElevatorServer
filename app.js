@@ -23,6 +23,7 @@ MySQL.start().then(() => {
     MySQL.query('SELECT 1;')
         .then(() => {
             state.emit('ready');
+            console.log("App is ready and running");
         })
         .catch(err => {
             state.emit('error');

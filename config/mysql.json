@@ -1,6 +1,6 @@
 {
   "host": "localhost",
   "user": "elevator",
-  "password": "elevator",
-  "database": "elevator1456+123."
+  "password": "elevator1456+123.",
+  "database": "elevator"
 }
