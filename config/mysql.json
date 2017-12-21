@@ -1,6 +1,6 @@
 {
-  "host": "5.189.145.208",
+  "host": "localhost",
   "user": "elevator",
   "password": "elevator",
-  "database": "elevator"
+  "database": "elevator1456+123."
 }

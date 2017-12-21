@@ -23,6 +23,9 @@ module.exports = {
     // M->B
     RELAY_ORDER: 'RelayOrder',
 
+    // S->M
+    RELAY_ORDER_RESPONSE: 'RelayOrderResponse',
+
     // M->S
     LISTEN_DEVICE: 'ListenDevice'
 };

@@ -35,6 +35,10 @@ function sendState(username, ws, state) {
     }
 }
 
+function orderRelay(device, floor, cb) {
+    //TODO: implement here
+}
+
 module.exports = {
     onConnect(user, ws, req) {
         //ws.send('MobileApp, Hello: ' + username);
@@ -50,7 +54,24 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.RELAY_ORDER:
-                //TODO: RELAY_ORDER
+                //TODO: implement here
+                orderRelay(user.device, message.floor, err => {
+                    const message = {
+                        _type: Message.RELAY_ORDER_RESPONSE,
+                        floor: message.floor
+                    };
+                    if (err) {
+                        message.success = false;
+                        ws.send(JSON.stringify(message), err => {
+
+                        });
+                    } else {
+                        message.success = true;
+                        ws.send(JSON.stringify(message), err => {
+                            // TODO: use push to deliver
+                        });
+                    }
+                });
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Mobile message: ' + JSON.stringify(message));
