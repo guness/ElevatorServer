@@ -4,6 +4,8 @@ const WebSocket = require('ws');
 const app = require('../app');
 const Message = require('../config/messageTypes');
 
+const TEST_HOST = 'localhost';//"elevator.onintech.com";
+
 before(done => {
     app.state.on('ready', () => {
         done();
@@ -16,7 +18,7 @@ after(() => {
 });
 
 describe('Test Endpoint', () => {
-    let wsTest = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/test');
+    let wsTest = new WebSocket('ws://sinan:gunes@' + TEST_HOST + ':' + (process.env.PORT || 8080) + '/test');
     wsTest.on('error', err => {
         console.error("Error on 'Test Endpoint' connection: " + err);
     });
@@ -27,7 +29,7 @@ describe('Test Endpoint', () => {
     });
     describe('#ping()', () => {
         it('should fail when no auth', done => {
-            let wsTestUnAuth = new WebSocket('ws://localhost:' + (process.env.PORT || 8080) + '/test');
+            let wsTestUnAuth = new WebSocket('ws://' + TEST_HOST + ':' + (process.env.PORT || 8080) + '/test');
             after(() => {
                 wsTestUnAuth.close(1001, 'After test');
             });
@@ -106,7 +108,7 @@ describe('Test Endpoint', () => {
 });
 
 describe('Board Endpoint', () => {
-    const wsBoard = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/board');
+    const wsBoard = new WebSocket('ws://sinan:gunes@' + TEST_HOST + ':' + (process.env.PORT || 8080) + '/board');
     after(() => {
         if (wsBoard.readyState !== WebSocket.CLOSED && wsBoard.readyState !== WebSocket.CLOSING) {
             wsBoard.close(1001, 'After test');
@@ -149,7 +151,7 @@ describe('Board Endpoint', () => {
 });
 
 describe('Mobile Endpoint', () => {
-    const wsMobile = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/mobile');
+    const wsMobile = new WebSocket('ws://sinan:gunes@' + TEST_HOST + ':' + (process.env.PORT || 8080) + '/mobile');
     after(() => {
         wsMobile.close(1001, 'After test');
     });
@@ -186,7 +188,7 @@ describe('Mobile Endpoint', () => {
 });
 
 describe('Invalid Endpoint', () => {
-    const wsInvalid = new WebSocket('ws://sinan:gunes@localhost:' + (process.env.PORT || 8080) + '/invalid');
+    const wsInvalid = new WebSocket('ws://sinan:gunes@' + TEST_HOST + ':' + (process.env.PORT || 8080) + '/invalid');
     after(() => {
         wsInvalid.close(1001, 'After test');
     });
