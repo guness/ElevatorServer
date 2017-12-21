@@ -16,6 +16,7 @@ module.exports = {
 
     // B->S
     LOG: 'Log',
+    INFO: 'Info',
 
     // B->M
     UPDATE_STATE: 'UpdateState',

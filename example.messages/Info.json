@@ -1,0 +1,10 @@
+{
+  "_type": "Info",
+  "version": 2,
+  "info": {
+    "address": "Lorem ipsum dolor sit amet",
+    "description": "Main Elevator",
+    "latitude": 34.33,
+    "longitude": -23.12
+  }
+}
