@@ -1,11 +1,17 @@
 const mysql = require('mysql');
 const mysqlAuth = require('../config/mysql');
+const mysqlAuthDev = require('../config/mysql.dev');
 
 let pool = null;
 
 const MysqlHandler = {
     start() {
-        pool = mysql.createPool(mysqlAuth);
+        let auth = mysqlAuthDev;
+        if (process.env.NODE_ENV === 'production') {
+            auth = mysqlAuth;
+        }
+
+        pool = mysql.createPool(auth);
 
         return new Promise((resolve, reject) => {
             pool.on('acquire', connection => {
