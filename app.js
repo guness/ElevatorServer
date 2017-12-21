@@ -1,3 +1,5 @@
+'use strict';
+
 const WebSocket = require('ws');
 const Auth = require('basic-auth');
 const Util = require('util');

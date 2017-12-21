@@ -171,6 +171,18 @@ describe('Mobile Endpoint', () => {
             }
         });
     });
+    describe('#ListenDevice', () => {
+        it('should be sent successfully', done => {
+            const message = {
+                "_type": Message.LISTEN_DEVICE,
+                "version": 2,
+                "device": "UUID-1234-567-890"
+            };
+            wsMobile.send(JSON.stringify(message), err => {
+                done(err);
+            })
+        });
+    });
 });
 
 describe('Invalid Endpoint', () => {

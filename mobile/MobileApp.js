@@ -1,5 +1,7 @@
 'use strict';
 
+const WebSocket = require('ws');
+const Util = require('util');
 const Moment = require('moment');
 const MySQL = require('../utils/mysql-handler');
 const Constants = require('../config/constants');
@@ -18,11 +20,12 @@ BoardApp.stateEmitter.on(Message.UPDATE_STATE, (device, state) => {
 
 function sendState(username, ws, state) {
     if (ws.readyState === WebSocket.OPEN) {
-        ws.send({
+        const message = {
             "_type": Message.UPDATE_STATE,
             "version": 2,
             "state": state
-        }, err => {
+        };
+        ws.send(JSON.stringify(message), err => {
             if (err) {
                 console.warn(Moment().format() + ' Cannot update Mobile: ' + username + ' err: ' + err);
             }
