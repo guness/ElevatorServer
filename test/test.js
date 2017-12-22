@@ -13,8 +13,10 @@ before(done => {
 });
 
 after(() => {
-    console.log('Closing Server App');
-    app.close();
+    setTimeout(() => {
+        console.log('Closing Server App');
+        app.close();
+    }, 3000);
 });
 
 describe('Test Endpoint', () => {
@@ -141,6 +143,24 @@ describe('Board Endpoint', () => {
                     "floor": 5,
                     "busy": false,
                     "direction": "UP"
+                }
+            };
+            wsBoard.send(JSON.stringify(message), err => {
+                done(err);
+            })
+        });
+    });
+    describe('#UpdateInfo', () => {
+        it('should be sent successfully', done => {
+            const message = {
+                "_type": Message.INFO,
+                "version": 2,
+                "info": {
+                    "floor": 6,
+                    "address": "Lorem ipsum dolor sit amet",
+                    "description": "Main Elevator",
+                    "latitude": 34.33,
+                    "longitude": -23.12
                 }
             };
             wsBoard.send(JSON.stringify(message), err => {

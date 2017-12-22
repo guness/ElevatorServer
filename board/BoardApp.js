@@ -17,14 +17,12 @@ function updateState(username, patch) {
 }
 
 function setInfo(username, info) {
-    MySQL.query('UPDATE ?? SET ? WHERE username = ?;',
-        [Constants.tableNames.BOARD, info, username])
+    MySQL.query('UPDATE ?? SET ? WHERE username = ?;', [Constants.tableNames.BOARD, info, username])
         .then(() => {
-            cb(true);
+            console.info(Moment().format() + ' Updating Board info: ' + JSON.stringify(info));
         })
         .catch(err => {
             console.error(Moment().format() + ' Error setting Board info: ' + err);
-            cb(false);
         });
 }
 
@@ -45,8 +43,7 @@ module.exports = {
                 console.info(Moment().format() + ' Updating Board state: ' + JSON.stringify(message));
                 break;
             case Message.INFO:
-                setInfo(user.name, message);
-                console.info(Moment().format() + ' Updating Board info: ' + JSON.stringify(message));
+                setInfo(user.name, message.info);
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Board message: ' + JSON.stringify(message));
