@@ -16,6 +16,18 @@ function updateState(username, patch) {
     stateEmitter.emit(Message.UPDATE_STATE, username, state);
 }
 
+function setInfo(username, info) {
+    MySQL.query('UPDATE ?? SET ? WHERE username = ?;',
+        [Constants.tableNames.BOARD, info, username])
+        .then(() => {
+            cb(true);
+        })
+        .catch(err => {
+            console.error(Moment().format() + ' Error setting Board info: ' + err);
+            cb(false);
+        });
+}
+
 module.exports = {
     stateEmitter: stateEmitter,
     getState(username) {
@@ -31,6 +43,10 @@ module.exports = {
                 message.online = true;
                 updateState(user.name, message);
                 console.info(Moment().format() + ' Updating Board state: ' + JSON.stringify(message));
+                break;
+            case Message.INFO:
+                setInfo(user.name, message);
+                console.info(Moment().format() + ' Updating Board info: ' + JSON.stringify(message));
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Board message: ' + JSON.stringify(message));
