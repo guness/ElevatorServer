@@ -26,6 +26,17 @@ function setInfo(username, info) {
         });
 }
 
+function addLog(username, log) {
+    log.board_name = username;
+    MySQL.query('INSERT INTO ?? SET ?;', [Constants.tableNames.LOG, log])
+        .then(() => {
+            console.info(Moment().format() + ' LOGGED by Board: ' + JSON.stringify(log));
+        })
+        .catch(err => {
+            console.error(Moment().format() + ' Error inserting LOG: ' + err);
+        });
+}
+
 module.exports = {
     stateEmitter: stateEmitter,
     getState(username) {
@@ -44,6 +55,9 @@ module.exports = {
                 break;
             case Message.INFO:
                 setInfo(user.name, message.info);
+                break;
+            case Message.LOG:
+                addLog(user.name, message.log);
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Board message: ' + JSON.stringify(message));

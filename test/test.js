@@ -168,6 +168,21 @@ describe('Board Endpoint', () => {
             })
         });
     });
+    describe('#Log', () => {
+        it('should be sent successfully', done => {
+            const message = {
+                "_type": Message.LOG,
+                "version": 2,
+                "log": {
+                    "severity": 2,
+                    "description": "Lorem ipsum dolor sit amet"
+                }
+            };
+            wsBoard.send(JSON.stringify(message), err => {
+                done(err);
+            })
+        });
+    });
 });
 
 describe('Mobile Endpoint', () => {

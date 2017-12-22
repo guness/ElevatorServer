@@ -8,5 +8,6 @@ module.exports = {
         MOBILE: `${DB_PREFIX}mobile`,
         BOARD: `${DB_PREFIX}board`,
         BOARD_GROUP: `${DB_PREFIX}boardGroup`,
+        LOG: `${DB_PREFIX}log`
     }
 };
