@@ -6,11 +6,12 @@ const Moment = require('moment');
 const MySQL = require('../utils/mysql-handler');
 const Constants = require('../config/constants');
 const Message = require('../config/messageTypes');
-const BoardApp = require('../board/BoardApp');
+const Emitters = require('../utils/emitters');
 
 const mobileMap = new Map();
+const orderEmitter = Emitters.getOrderEmitter();
 
-BoardApp.stateEmitter.on(Message.UPDATE_STATE, (device, state) => {
+Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
     for (let mobile in mobileMap.values()) {
         if (mobile.user.device === device) {
             sendState(mobile.user.name, mobile.ws, state);
@@ -40,6 +41,7 @@ function orderRelay(device, floor, cb) {
 }
 
 module.exports = {
+    orderEmitter: orderEmitter,
     onConnect(user, ws, req) {
         //ws.send('MobileApp, Hello: ' + username);
         mobileMap.set(user.name, {user: user, ws: ws});

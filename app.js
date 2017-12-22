@@ -4,15 +4,17 @@ const WebSocket = require('ws');
 const Auth = require('basic-auth');
 const Util = require('util');
 const Moment = require('moment');
+const EventEmitter = require('events');
+
+const state = new EventEmitter();
+
 const Constants = require('./config/constants');
 const MySQL = require('./utils/mysql-handler');
 const Message = require('./config/messageTypes');
 const BoardApp = require('./board/BoardApp');
 const MobileApp = require('./mobile/MobileApp');
 const TestApp = require('./test/TestApp');
-const EventEmitter = require('events');
 
-const state = new EventEmitter({});
 
 const wss = new WebSocket.Server({
     port: process.env.PORT || 8080,

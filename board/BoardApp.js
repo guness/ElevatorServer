@@ -1,14 +1,40 @@
 'use strict';
 
 const Moment = require('moment');
-const EventEmitter = require('events');
 const MySQL = require('../utils/mysql-handler');
 const Constants = require('../config/constants');
 const Message = require('../config/messageTypes');
 const DeviceState = require('../models/DeviceState');
+const Emitters = require('../utils/emitters');
 
 const boardMap = new Map();
-const stateEmitter = new EventEmitter();
+const stateEmitter = Emitters.getStateEmitter();
+
+Emitters.getOrderEmitter().on(Message.RELAY_ORDER, (device, floor) => {
+    const board = boardMap.get(device);
+    if (board) {
+        sendRelayOrder(device, board.ws, floor);
+    } else {
+        console.warn(Moment().format() + ' Cannot deliver relay order to Board: ' + device);
+    }
+});
+
+function sendRelayOrder(device, ws, floor) {
+    if (ws.readyState === WebSocket.OPEN) {
+        const message = {
+            "_type": Message.RELAY_ORDER,
+            "version": 2,
+            "floor": floor
+        };
+        ws.send(JSON.stringify(message), err => {
+            if (err) {
+                console.warn(Moment().format() + ' Cannot deliver relay order to Board: ' + device + ' due to: ' + err);
+            }
+        });
+    } else {
+        console.warn(Moment().format() + ' Cannot deliver relay order to Board: ' + device + ' since socket is not OPEN');
+    }
+}
 
 function updateState(username, patch) {
     const state = boardMap.get(username).state;
@@ -38,7 +64,6 @@ function addLog(username, log) {
 }
 
 module.exports = {
-    stateEmitter: stateEmitter,
     getState(username) {
         return boardMap.get(username);
     },
