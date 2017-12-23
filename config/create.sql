@@ -30,7 +30,8 @@ CREATE TABLE `elv_board` (
   `latitude` float DEFAULT NULL,
   `longitude` float DEFAULT NULL,
   `hash` varchar(40) DEFAULT NULL,
-  `floor` int(11) DEFAULT NULL,
+  `min_floor` int(11) DEFAULT NULL,
+  `floor_count` int(11) unsigned DEFAULT NULL,
   `group_id` int(11) unsigned DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -41,7 +42,7 @@ CREATE TABLE `elv_board` (
   UNIQUE KEY `username` (`username`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `elv_board_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `elv_boardGroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +79,7 @@ CREATE TABLE `elv_log` (
   PRIMARY KEY (`id`),
   KEY `board_name` (`board_name`),
   CONSTRAINT `elv_log_ibfk_1` FOREIGN KEY (`board_name`) REFERENCES `elv_board` (`username`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +100,7 @@ CREATE TABLE `elv_mobile` (
   `on_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -111,4 +112,4 @@ CREATE TABLE `elv_mobile` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-23 17:59:30
+-- Dump completed on 2017-12-23 18:59:55

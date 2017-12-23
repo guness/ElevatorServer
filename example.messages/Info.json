@@ -2,7 +2,8 @@
   "_type": "Info",
   "version": 2,
   "info": {
-    "floor": 10,
+    "min_floor": -2,
+    "floor_count": 10,
     "address": "Lorem ipsum dolor sit amet",
     "description": "Main Elevator",
     "latitude": 34.33,
