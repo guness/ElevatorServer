@@ -8,18 +8,18 @@ const DeviceState = require('../models/DeviceState');
 const Emitters = require('../utils/emitters');
 
 const boardMap = new Map();
-const stateEmitter = Emitters.getStateEmitter();
 
-Emitters.getOrderEmitter().on(Message.RELAY_ORDER, (device, floor) => {
+Emitters.getOrderEmitter().on(Message.RELAY_ORDER, (device, floor, cb) => {
     const board = boardMap.get(device);
     if (board) {
-        sendRelayOrder(device, board.ws, floor);
+        sendRelayOrder(device, board.ws, floor, cb);
     } else {
         console.warn(Moment().format() + ' Cannot deliver relay order to Board: ' + device);
+        cb(new Error("Board cannot be accessed."));
     }
 });
 
-function sendRelayOrder(device, ws, floor) {
+function sendRelayOrder(device, ws, floor, cb) {
     if (ws.readyState === WebSocket.OPEN) {
         const message = {
             "_type": Message.RELAY_ORDER,
@@ -29,17 +29,21 @@ function sendRelayOrder(device, ws, floor) {
         ws.send(JSON.stringify(message), err => {
             if (err) {
                 console.warn(Moment().format() + ' Cannot deliver relay order to Board: ' + device + ' due to: ' + err);
+                cb(err);
+            } else {
+                cb();
             }
         });
     } else {
         console.warn(Moment().format() + ' Cannot deliver relay order to Board: ' + device + ' since socket is not OPEN');
+        cb(new Error("Board cannot be accessed."));
     }
 }
 
 function updateState(username, patch) {
     const state = boardMap.get(username).state;
     state.applyPatch(patch);
-    stateEmitter.emit(Message.UPDATE_STATE, username, state);
+    Emitters.getStateEmitter().emit(Message.UPDATE_STATE, username, state);
 }
 
 function setInfo(username, info) {

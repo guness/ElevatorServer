@@ -7,9 +7,9 @@ const MySQL = require('../utils/mysql-handler');
 const Constants = require('../config/constants');
 const Message = require('../config/messageTypes');
 const Emitters = require('../utils/emitters');
+const BoardApp = require('../board/BoardApp');
 
 const mobileMap = new Map();
-const orderEmitter = Emitters.getOrderEmitter();
 
 Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
     for (let mobile in mobileMap.values()) {
@@ -37,11 +37,10 @@ function sendState(username, ws, state) {
 }
 
 function orderRelay(device, floor, cb) {
-    //TODO: implement here
+    Emitters.getOrderEmitter().emit(Message.RELAY_ORDER, device, floor, cb);
 }
 
 module.exports = {
-    orderEmitter: orderEmitter,
     onConnect(user, ws, req) {
         //ws.send('MobileApp, Hello: ' + username);
         mobileMap.set(user.name, {user: user, ws: ws});
@@ -56,23 +55,16 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.RELAY_ORDER:
-                //TODO: implement here
                 orderRelay(user.device, message.floor, err => {
                     const message = {
                         _type: Message.RELAY_ORDER_RESPONSE,
                         floor: message.floor
                     };
-                    if (err) {
-                        message.success = false;
-                        ws.send(JSON.stringify(message), err => {
+                    message.success = !err;
 
-                        });
-                    } else {
-                        message.success = true;
-                        ws.send(JSON.stringify(message), err => {
-                            // TODO: use push to deliver
-                        });
-                    }
+                    ws.send(JSON.stringify(message), err => {
+                        // TODO: use push to deliver
+                    });
                 });
                 break;
             default:
