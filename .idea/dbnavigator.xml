@@ -25,7 +25,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="11b06461-1738-408a-b55f-8bfa1ec58b28">
-        <schema name="elevator" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
+        <schema name="elevator" object-types="table" />
       </connection>
     </loaded-nodes>
   </component>

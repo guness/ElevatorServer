@@ -156,8 +156,8 @@ describe('Board Endpoint', () => {
                 "_type": Message.INFO,
                 "version": 2,
                 "info": {
-                    "starting": -2,
-                    "floor": 6,
+                    "min_floor": -2,
+                    "floor_count": 10,
                     "address": "Lorem ipsum dolor sit amet",
                     "description": "Main Elevator",
                     "latitude": 34.33,

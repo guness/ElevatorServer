@@ -55,10 +55,14 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.RELAY_ORDER:
-                orderRelay(user.device, message.floor, err => {
+                console.info(Moment().format() + ' Order Board and User Board is different for the User: ' + user);
+                orderRelay(message.order.device, message.order.floor, err => {
                     const message = {
                         _type: Message.RELAY_ORDER_RESPONSE,
-                        floor: message.floor
+                        order: {
+                            floor: message.floor,
+                            device: message.device
+                        }
                     };
                     message.success = !err;
 

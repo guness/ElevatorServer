@@ -1,7 +1,6 @@
 {
-  "_type": "RelayOrderResponse",
+  "_type": "RelayOrder",
   "version": 2,
-  "success": true,
   "order": {
     "floor": 4,
     "device": "UUID-1234-567-890"
