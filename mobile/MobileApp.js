@@ -54,6 +54,10 @@ module.exports = {
                 sendState(user.name, ws, state);
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
+            case Message.STOP_LISTENING:
+                user.device = undefined;
+                console.info(Moment().format() + ' User ' + user.name + ' stopped listening');
+                break;
             case Message.RELAY_ORDER:
                 console.info(Moment().format() + ' Order Board and User Board is different for the User: ' + user);
                 orderRelay(message.order.device, message.order.floor, err => {

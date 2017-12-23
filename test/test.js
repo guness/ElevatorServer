@@ -221,6 +221,17 @@ describe('Mobile Endpoint', () => {
             })
         });
     });
+    describe('#StopListening', () => {
+        it('should be sent successfully', done => {
+            const message = {
+                "_type": Message.STOP_LISTENING,
+                "version": 2
+            };
+            wsMobile.send(JSON.stringify(message), err => {
+                done(err);
+            })
+        });
+    });
 });
 
 describe('Invalid Endpoint', () => {

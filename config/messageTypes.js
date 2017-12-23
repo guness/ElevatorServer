@@ -28,5 +28,6 @@ module.exports = {
     RELAY_ORDER_RESPONSE: 'RelayOrderResponse',
 
     // M->S
-    LISTEN_DEVICE: 'ListenDevice'
+    LISTEN_DEVICE: 'ListenDevice',
+    STOP_LISTENING: 'StopListening'
 };
