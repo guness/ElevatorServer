@@ -69,19 +69,19 @@ function sendInfo(ws, type, id) {
                     MySQL.query('SELECT * from ?? WHERE group_id = ?;', [Constants.tableNames.BOARD, group.id])
                         .then(results => {
                             let elevators = [];
-                            for (const i in results) {
+                            results.forEach(result => {
                                 const elevator = {
-                                    id: results[i].id,
-                                    device: results[i].username,
-                                    min_floor: results[i].min_floor,
-                                    floor_count: results[i].floor_count,
-                                    address: results[i].address,
-                                    description: results[i].description,
-                                    latitude: results[i].latitude,
-                                    longitude: results[i].latitude
+                                    id: result.id,
+                                    device: result.username,
+                                    min_floor: result.min_floor,
+                                    floor_count: result.floor_count,
+                                    address: result.address,
+                                    description: result.description,
+                                    latitude: result.latitude,
+                                    longitude: result.latitude
                                 };
                                 elevators.push(elevator)
-                            }
+                            });
                             const message = {
                                 _type: Message.GROUP_INFO,
                                 version: 2,
