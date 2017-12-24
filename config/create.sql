@@ -41,18 +41,18 @@ CREATE TABLE `elv_board` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `group_id` (`group_id`),
-  CONSTRAINT `elv_board_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `elv_boardGroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `elv_board_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `elv_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `elv_boardGroup`
+-- Table structure for table `elv_group`
 --
 
-DROP TABLE IF EXISTS `elv_boardGroup`;
+DROP TABLE IF EXISTS `elv_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `elv_boardGroup` (
+CREATE TABLE `elv_group` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) unsigned DEFAULT NULL,
   `description` varchar(255) DEFAULT '',

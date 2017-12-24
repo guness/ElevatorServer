@@ -7,7 +7,7 @@ module.exports = {
     tableNames: {
         MOBILE: `${DB_PREFIX}mobile`,
         BOARD: `${DB_PREFIX}board`,
-        BOARD_GROUP: `${DB_PREFIX}boardGroup`,
+        GROUP: `${DB_PREFIX}group`,
         LOG: `${DB_PREFIX}log`
     }
 };

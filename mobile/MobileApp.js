@@ -14,17 +14,17 @@ const mobileMap = new Map();
 Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
     for (let mobile in mobileMap.values()) {
         if (mobile.user.device === device) {
-            sendState(mobile.user.name, mobile.ws, state);
+            sendState(mobile.ws, mobile.user.name, state);
         }
     }
 });
 
-function sendState(username, ws, state) {
+function sendState(ws, username, state) {
     if (ws.readyState === WebSocket.OPEN) {
         const message = {
-            "_type": Message.UPDATE_STATE,
-            "version": 2,
-            "state": state
+            _type: Message.UPDATE_STATE,
+            version: 2,
+            state: state
         };
         ws.send(JSON.stringify(message), err => {
             if (err) {
@@ -36,8 +36,81 @@ function sendState(username, ws, state) {
     }
 }
 
-function orderRelay(device, floor, cb) {
-    Emitters.getOrderEmitter().emit(Message.RELAY_ORDER, device, floor, cb);
+function orderRelay(ws, device, floor) {
+    Emitters.getOrderEmitter().emit(Message.RELAY_ORDER, device, floor, err => {
+        const message = {
+            _type: Message.RELAY_ORDER_RESPONSE,
+            version: 2,
+            order: {
+                floor: floor,
+                device: device
+            }
+        };
+        message.success = !err;
+
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify(message), err => {
+                // TODO: use push to deliver
+            });
+        } else {
+            // TODO: use push to deliver
+        }
+    });
+}
+
+function sendInfo(ws, type, id) {
+    if (type === 'Group') {
+        MySQL.query('SELECT * from ?? WHERE id = ?;', [Constants.tableNames.GROUP, id])
+            .then(results => {
+                if (results.length === 1) {
+                    let group = results[0];
+                    MySQL.query('SELECT * from ?? WHERE group_id = ?;', [Constants.tableNames.BOARD, group.id])
+                        .then(results => {
+                            let elevators = [];
+                            for (let result in results) {
+                                let elevator = {
+                                    "device": result.username,
+                                    "min_floor": result.min_floor,
+                                    "floor_count": result.floor_count,
+                                    "address": result.address,
+                                    "description": result.description,
+                                    "latitude": result.latitude,
+                                    "longitude": result.latitude
+                                };
+                                elevators.push(elevator)
+                            }
+                            const message = {
+                                _type: Message.GROUP_INFO,
+                                version: 2,
+                                group: {
+                                    id: group.id,
+                                    description: group.description,
+                                    elevators: elevators
+                                }
+                            };
+                            if (ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify(message), err => {
+                                    // TODO: use push to deliver
+                                    console.error(Moment().format() + ' Could not deliver Group info: ' + group.id + ' : ' + err);
+                                });
+                            } else {
+                                // TODO: use push to deliver
+                                console.error(Moment().format() + ' Could not deliver Group info: ' + group.id);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(Moment().format() + ' Error fetching Boards for Group: ' + group.id + ' : ' + err);
+                        });
+                } else {
+                    console.warn(Moment().format() + ' Fetching unregistered Group: ' + id);
+                }
+            })
+            .catch(err => {
+                console.error(Moment().format() + ' Error fetching Group: ' + err);
+            });
+    } else {
+        console.warn(Moment().format() + ' Unhandled fetch type: ' + type);
+    }
 }
 
 module.exports = {
@@ -51,7 +124,7 @@ module.exports = {
             case Message.LISTEN_DEVICE:
                 user.device = message.device;
                 let state = BoardApp.getState(user.device);
-                sendState(user.name, ws, state);
+                sendState(ws, user.name, state);
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.STOP_LISTENING:
@@ -60,20 +133,10 @@ module.exports = {
                 break;
             case Message.RELAY_ORDER:
                 console.info(Moment().format() + ' Order Board and User Board is different for the User: ' + user);
-                orderRelay(message.order.device, message.order.floor, err => {
-                    const message = {
-                        _type: Message.RELAY_ORDER_RESPONSE,
-                        order: {
-                            floor: message.floor,
-                            device: message.device
-                        }
-                    };
-                    message.success = !err;
-
-                    ws.send(JSON.stringify(message), err => {
-                        // TODO: use push to deliver
-                    });
-                });
+                orderRelay(ws, message.order.device, message.order.floor);
+                break;
+            case Message.FETCH_INFO:
+                sendInfo(ws, message.fetch.type, message.fetch.id);
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Mobile message: ' + JSON.stringify(message));
