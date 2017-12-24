@@ -98,6 +98,7 @@ wss.on('connection', (ws, req) => {
                     }
                 } catch (err) {
                     console.error(Moment().format() + ' Exception: ' + err);
+                    console.error(Moment().format() + ' Data: ' + data);
                 }
             });
 
