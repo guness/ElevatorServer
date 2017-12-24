@@ -6,6 +6,7 @@
     "description": "Lorem Group",
     "elevators": [
       {
+        "id": 1,
         "device": "UUID-12345-6789-0123",
         "min_floor": -2,
         "floor_count": 10,
@@ -15,6 +16,7 @@
         "longitude": -23.12
       },
       {
+        "id": 2,
         "device": "UUID-987-543-21",
         "min_floor": -1,
         "floor_count": 6,

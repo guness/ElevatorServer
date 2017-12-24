@@ -59,7 +59,7 @@ function orderRelay(ws, device, floor) {
 }
 
 function sendInfo(ws, type, id) {
-    if (type === 'Group') {
+    if (type === Constants.fetchTypes.GROUP) {
         MySQL.query('SELECT * from ?? WHERE id = ?;', [Constants.tableNames.GROUP, id])
             .then(results => {
                 if (results.length === 1) {
@@ -69,6 +69,7 @@ function sendInfo(ws, type, id) {
                             let elevators = [];
                             for (let result in results) {
                                 let elevator = {
+                                    "id": result.id,
                                     "device": result.username,
                                     "min_floor": result.min_floor,
                                     "floor_count": result.floor_count,

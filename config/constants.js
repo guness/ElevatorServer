@@ -9,5 +9,8 @@ module.exports = {
         BOARD: `${DB_PREFIX}board`,
         GROUP: `${DB_PREFIX}group`,
         LOG: `${DB_PREFIX}log`
+    },
+    fetchTypes: {
+        GROUP: 'Group'
     }
 };
