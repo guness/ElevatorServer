@@ -78,22 +78,26 @@ wss.on('connection', (ws, req) => {
             const user = Auth(req);
             module.onConnect(user, ws, req);
             ws.on('message', data => {
-                const message = JSON.parse(data);
+                try {
+                    const message = JSON.parse(data);
 
-                switch (message._type) {
-                    case undefined:
-                    case null:
-                    case '':
-                        closeNice(ws, 1002, 'Unknown message type');
-                        console.error(Moment().format() + ' Unknown message type');
-                        //TODO: error log
-                        break;
-                    case Message.ECHO:
-                        ws.send(data);
-                        break;
-                    default:
-                        module.onMessage(user, ws, req, message);
-                        break;
+                    switch (message._type) {
+                        case undefined:
+                        case null:
+                        case '':
+                            closeNice(ws, 1002, 'Unknown message type');
+                            console.error(Moment().format() + ' Unknown message type');
+                            //TODO: error log
+                            break;
+                        case Message.ECHO:
+                            ws.send(data);
+                            break;
+                        default:
+                            module.onMessage(user, ws, req, message);
+                            break;
+                    }
+                } catch (err) {
+                    console.error(Moment().format() + ' Exception: ' + err);
                 }
             });
 
