@@ -86,8 +86,7 @@ wss.on('connection', (ws, req) => {
                         case null:
                         case '':
                             closeNice(ws, 1002, 'Unknown message type');
-                            console.error(Moment().format() + ' Unknown message type');
-                            //TODO: error log
+                            console.error(Moment().format() + ' Unknown message type for data ' + data);
                             break;
                         case Message.ECHO:
                             ws.send(data);
