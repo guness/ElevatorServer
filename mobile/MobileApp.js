@@ -50,7 +50,9 @@ function orderRelay(ws, device, floor) {
 
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify(message), err => {
-                // TODO: use push to deliver
+                if (err) {
+                    // TODO: use push to deliver
+                }
             });
         } else {
             // TODO: use push to deliver
@@ -69,14 +71,14 @@ function sendInfo(ws, type, id) {
                             let elevators = [];
                             for (let result in results) {
                                 let elevator = {
-                                    "id": result.id,
-                                    "device": result.username,
-                                    "min_floor": result.min_floor,
-                                    "floor_count": result.floor_count,
-                                    "address": result.address,
-                                    "description": result.description,
-                                    "latitude": result.latitude,
-                                    "longitude": result.latitude
+                                    id: result.id,
+                                    device: result.username,
+                                    min_floor: result.min_floor,
+                                    floor_count: result.floor_count,
+                                    address: result.address,
+                                    description: result.description,
+                                    latitude: result.latitude,
+                                    longitude: result.latitude
                                 };
                                 elevators.push(elevator)
                             }
@@ -91,8 +93,10 @@ function sendInfo(ws, type, id) {
                             };
                             if (ws.readyState === WebSocket.OPEN) {
                                 ws.send(JSON.stringify(message), err => {
-                                    // TODO: use push to deliver
-                                    console.error(Moment().format() + ' Could not deliver Group info: ' + group.id + ' : ' + err);
+                                    if (err) {
+                                        // TODO: use push to deliver
+                                        console.error(Moment().format() + ' Could not deliver Group info: ' + group.id + ' : ' + err);
+                                    }
                                 });
                             } else {
                                 // TODO: use push to deliver
