@@ -3,6 +3,7 @@
   "version": 2,
   "state": {
     "floor": 5,
+    "device": "UUID-1234-567-890",
     "busy": false,
     "direction": "UP",
     "online": true

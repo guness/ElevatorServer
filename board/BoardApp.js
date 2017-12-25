@@ -42,9 +42,13 @@ function sendRelayOrder(device, ws, floor, cb) {
 }
 
 function updateState(username, patch) {
-    const state = boardMap.get(username).state;
+    const state = getState(username);
     state.applyPatch(patch);
     Emitters.getStateEmitter().emit(Message.UPDATE_STATE, username, state);
+}
+
+function getState(username) {
+    return boardMap.get(username).state;
 }
 
 function setInfo(username, info) {
@@ -69,9 +73,7 @@ function addLog(username, log) {
 }
 
 module.exports = {
-    getState(username) {
-        return boardMap.get(username);
-    },
+    getState: getState,
     onConnect(user, ws, req) {
         boardMap.set(user.name, {user: user, ws: ws, state: new DeviceState()});
         console.info(Moment().format() + ' Total Boards connected: ' + boardMap.size + ' new Board: ' + user.name);
