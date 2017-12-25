@@ -1,5 +1,6 @@
 'use strict';
 
+const WebSocket = require('ws');
 const Moment = require('moment');
 const MySQL = require('../utils/mysql-handler');
 const Constants = require('../config/constants');

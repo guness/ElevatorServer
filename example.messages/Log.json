@@ -3,6 +3,6 @@
   "version": 2,
   "log": {
     "severity": 1,
-    "message": "Lorem ipsum dolor sit amet"
+    "description": "Lorem ipsum dolor sit amet"
   }
 }

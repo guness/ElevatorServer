@@ -38,6 +38,9 @@ function sendState(ws, username, state) {
 
 function orderRelay(ws, device, floor) {
     Emitters.getOrderEmitter().emit(Message.RELAY_ORDER, device, floor, err => {
+        if (err) {
+            console.log('Error emitting Relay Order: ' + err)
+        }
         const message = {
             _type: Message.RELAY_ORDER_RESPONSE,
             version: 2,
@@ -137,7 +140,6 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' stopped listening');
                 break;
             case Message.RELAY_ORDER:
-                console.info(Moment().format() + ' Order Board and User Board is different for the User: ' + user);
                 orderRelay(ws, message.order.device, message.order.floor);
                 break;
             case Message.FETCH_INFO:
