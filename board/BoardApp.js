@@ -81,8 +81,8 @@ module.exports = {
     onMessage(user, ws, req, message) {
         switch (message._type) {
             case Message.UPDATE_STATE:
-                message.online = true;
-                updateState(user.name, message);
+                message.state.online = true;
+                updateState(user.name, message.state);
                 console.info(Moment().format() + ' Updating Board state: ' + JSON.stringify(message));
                 break;
             case Message.INFO:
