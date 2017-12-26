@@ -48,7 +48,15 @@ function updateState(username, patch) {
 }
 
 function getState(username) {
-    return boardMap.get(username).state;
+    const map = boardMap.get(username);
+    if (map) {
+        return map.state
+    } else {
+        return {
+            "device": username,
+            "online": false
+        }
+    }
 }
 
 function setInfo(username, info) {
