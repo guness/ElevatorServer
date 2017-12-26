@@ -132,7 +132,6 @@ module.exports = {
             case Message.LISTEN_DEVICE:
                 user.device = message.device;
                 let state = BoardApp.getState(user.device);
-                state.device = message.device;
                 sendState(ws, user.name, state);
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
