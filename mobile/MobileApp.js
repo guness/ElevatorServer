@@ -14,12 +14,12 @@ const mobileMap = new Map();
 Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
     console.log("MobileApp_ UPDATE_STATE#1 device: " + device + " state: " + JSON.stringify(state));
     console.log("MobileApp_ UPDATE_STATE#2 mobileMap: " + JSON.stringify(mobileMap));
-    for (let mobile in mobileMap.values()) {
+    mobileMap.forEach(mobile => {
         console.log("MobileApp_ UPDATE_STATE#3 mobile: " + JSON.stringify(mobile));
         if (mobile.user.device === device) {
             sendState(mobile.ws, mobile.user.name, state);
         }
-    }
+    });
 });
 
 function sendState(ws, username, state) {
