@@ -1,11 +1,12 @@
 'use strict';
 
 class DeviceState {
-    constructor() {
+    constructor(device) {
         this.online = false;
         this.floor = undefined;
         this.busy = undefined;
         this.direction = undefined;
+        this.device = device;
     }
 
     goOnline(floor) {

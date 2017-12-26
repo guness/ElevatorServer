@@ -83,7 +83,7 @@ function addLog(username, log) {
 module.exports = {
     getState: getState,
     onConnect(user, ws, req) {
-        boardMap.set(user.name, {user: user, ws: ws, state: new DeviceState()});
+        boardMap.set(user.name, {user: user, ws: ws, state: new DeviceState(user.name)});
         console.info(Moment().format() + ' Total Boards connected: ' + boardMap.size + ' new Board: ' + user.name);
     },
     onMessage(user, ws, req, message) {
