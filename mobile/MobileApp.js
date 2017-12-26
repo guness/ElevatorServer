@@ -129,6 +129,7 @@ module.exports = {
         //ws.send('MobileApp, Hello: ' + username);
         mobileMap.set(user.name, {user: user, ws: ws});
         console.info(Moment().format() + ' Total Mobiles connected: ' + mobileMap.size + ' new Mobile: ' + user.name);
+        console.log("MobileApp_ onConnect mobileMap: " + JSON.stringify(mobileMap));
     },
     onMessage(user, ws, req, message) {
         switch (message._type) {
@@ -155,7 +156,9 @@ module.exports = {
         }
     },
     onClose(user, ws, req) {
+        console.log("MobileApp_ onClose1 mobileMap: " + JSON.stringify(mobileMap));
         mobileMap.delete(user.name);
+        console.log("MobileApp_ onClose2 mobileMap: " + JSON.stringify(mobileMap));
         console.info(Moment().format() + ' Total Mobiles connected: ' + mobileMap.size + ' Mobile disconnected: ' + user.name);
     },
     onAuth(user, cb) {
