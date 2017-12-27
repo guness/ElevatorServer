@@ -81,7 +81,7 @@ function sendInfo(ws, type, id) {
                                     address: result.address,
                                     description: result.description,
                                     latitude: result.latitude,
-                                    longitude: result.latitude
+                                    longitude: result.longitude
                                 };
                                 elevators.push(elevator)
                             });
