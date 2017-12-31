@@ -136,7 +136,9 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' started to listen ' + user.device);
                 break;
             case Message.STOP_LISTENING:
-                user.device = undefined;
+                if (message.device === user.device || !message.device) {
+                    user.device = undefined;
+                }
                 console.info(Moment().format() + ' User ' + user.name + ' stopped listening');
                 break;
             case Message.RELAY_ORDER:
