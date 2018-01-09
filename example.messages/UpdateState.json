@@ -4,6 +4,7 @@
   "state": {
     "floor": 5,
     "busy": false,
-    "direction": "UP"
+    "direction": "UP",
+    "action": "PASS"
   }
 }

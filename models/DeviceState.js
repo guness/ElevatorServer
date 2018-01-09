@@ -6,6 +6,7 @@ class DeviceState {
         this.floor = undefined;
         this.busy = undefined;
         this.direction = undefined;
+        this.action = undefined;
         this.device = device;
     }
 
@@ -19,10 +20,12 @@ class DeviceState {
             this.floor = diff.floor;
             this.busy = diff.busy;
             this.direction = diff.direction;
+            this.action = diff.action;
         } else {
             this.floor = undefined;
             this.busy = undefined;
             this.direction = undefined;
+            this.action = undefined;
         }
     }
 }
