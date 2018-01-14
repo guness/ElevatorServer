@@ -11,6 +11,7 @@ module.exports = {
         LOG: `${DB_PREFIX}log`
     },
     fetchTypes: {
-        GROUP: 'Group'
+        GROUP: 'Group',
+        UUID: 'Uuid'
     }
 };

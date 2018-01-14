@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: elevator
 -- ------------------------------------------------------
--- Server version	5.7.20-0ubuntu0.16.04.1
+-- Server version	5.7.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -42,7 +42,7 @@ CREATE TABLE `elv_board` (
   UNIQUE KEY `username` (`username`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `elv_board_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `elv_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,12 +54,14 @@ DROP TABLE IF EXISTS `elv_group`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `elv_group` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(40) NOT NULL,
   `parent_id` int(11) unsigned DEFAULT NULL,
   `description` varchar(255) DEFAULT '',
   `address` varchar(255) DEFAULT NULL,
   `latitude` float DEFAULT NULL,
   `longtitude` float DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -79,7 +81,7 @@ CREATE TABLE `elv_log` (
   PRIMARY KEY (`id`),
   KEY `board_name` (`board_name`),
   CONSTRAINT `elv_log_ibfk_1` FOREIGN KEY (`board_name`) REFERENCES `elv_board` (`username`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +102,7 @@ CREATE TABLE `elv_mobile` (
   `on_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -112,4 +114,4 @@ CREATE TABLE `elv_mobile` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-23 18:59:55
+-- Dump completed on 2018-01-14 21:37:16

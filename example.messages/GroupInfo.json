@@ -3,11 +3,12 @@
   "version": 2,
   "group": {
     "id": 1,
+    "uuid": "UUID-12345-6789-0123-DemoGroup",
     "description": "Lorem Group",
     "elevators": [
       {
         "id": 1,
-        "device": "UUID-12345-6789-0123",
+        "device": "UUID-12345-6789-0123-12345",
         "min_floor": -2,
         "floor_count": 10,
         "address": "Lorem ipsum dolor sit amet",
@@ -17,7 +18,7 @@
       },
       {
         "id": 2,
-        "device": "UUID-987-543-21",
+        "device": "UUID-987-543-21-12312",
         "min_floor": -1,
         "floor_count": 6,
         "address": "Lorem ipsum dolor sit amet",

@@ -3,6 +3,7 @@
   "version": 2,
   "fetch": {
     "type": "Group",
-    "id": 2
+    "id": 2,
+    "uuid": "UUID-1231-4443-DEMO-Uid"
   }
 }

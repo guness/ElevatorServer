@@ -63,54 +63,73 @@ function orderRelay(ws, device, floor) {
     });
 }
 
-function sendInfo(ws, type, id) {
-    if (type === Constants.fetchTypes.GROUP) {
-        MySQL.query('SELECT * from ?? WHERE id = ?;', [Constants.tableNames.GROUP, id])
+function sendGroupInfo(ws, group) {
+    MySQL.query('SELECT * from ?? WHERE group_id = ?;', [Constants.tableNames.BOARD, group.id])
+        .then(results => {
+            let elevators = [];
+            results.forEach(result => {
+                const elevator = {
+                    id: result.id,
+                    device: result.username,
+                    min_floor: result.min_floor,
+                    floor_count: result.floor_count,
+                    address: result.address,
+                    description: result.description,
+                    latitude: result.latitude,
+                    longitude: result.longitude
+                };
+                elevators.push(elevator)
+            });
+            const message = {
+                _type: Message.GROUP_INFO,
+                version: 2,
+                group: {
+                    id: group.id,
+                    uuid: group.uuid,
+                    description: group.description,
+                    elevators: elevators
+                }
+            };
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(message), err => {
+                    if (err) {
+                        // TODO: use push to deliver
+                        console.error(Moment().format() + ' Could not deliver Group info: ' + group.id + ' : ' + err);
+                    }
+                });
+            } else {
+                // TODO: use push to deliver
+                console.error(Moment().format() + ' Could not deliver Group info: ' + group.id);
+            }
+        })
+        .catch(err => {
+            console.error(Moment().format() + ' Error fetching Boards for Group: ' + group.id + ' : ' + err);
+        });
+}
+
+function sendInfo(ws, fetch) {
+    if (fetch.type === Constants.fetchTypes.GROUP) {
+        MySQL.query('SELECT * from ?? WHERE id = ?;', [Constants.tableNames.GROUP, fetch.id])
             .then(results => {
                 if (results.length === 1) {
                     let group = results[0];
-                    MySQL.query('SELECT * from ?? WHERE group_id = ?;', [Constants.tableNames.BOARD, group.id])
-                        .then(results => {
-                            let elevators = [];
-                            results.forEach(result => {
-                                const elevator = {
-                                    id: result.id,
-                                    device: result.username,
-                                    min_floor: result.min_floor,
-                                    floor_count: result.floor_count,
-                                    address: result.address,
-                                    description: result.description,
-                                    latitude: result.latitude,
-                                    longitude: result.longitude
-                                };
-                                elevators.push(elevator)
-                            });
-                            const message = {
-                                _type: Message.GROUP_INFO,
-                                version: 2,
-                                group: {
-                                    id: group.id,
-                                    description: group.description,
-                                    elevators: elevators
-                                }
-                            };
-                            if (ws.readyState === WebSocket.OPEN) {
-                                ws.send(JSON.stringify(message), err => {
-                                    if (err) {
-                                        // TODO: use push to deliver
-                                        console.error(Moment().format() + ' Could not deliver Group info: ' + group.id + ' : ' + err);
-                                    }
-                                });
-                            } else {
-                                // TODO: use push to deliver
-                                console.error(Moment().format() + ' Could not deliver Group info: ' + group.id);
-                            }
-                        })
-                        .catch(err => {
-                            console.error(Moment().format() + ' Error fetching Boards for Group: ' + group.id + ' : ' + err);
-                        });
+                    sendGroupInfo(ws, group);
                 } else {
-                    console.warn(Moment().format() + ' Fetching unregistered Group: ' + id);
+                    console.warn(Moment().format() + ' Fetching unregistered Group: ' + fetch.id);
+                }
+            })
+            .catch(err => {
+                console.error(Moment().format() + ' Error fetching Group: ' + err);
+            });
+    } else if (fetch.type === Constants.fetchTypes.UUID) {
+        //TODO: fetch on other things as well
+        MySQL.query('SELECT * from ?? WHERE uuid = ?;', [Constants.tableNames.GROUP, fetch.uuid])
+            .then(results => {
+                if (results.length === 1) {
+                    let group = results[0];
+                    sendGroupInfo(ws, group);
+                } else {
+                    console.warn(Moment().format() + ' Fetching unregistered UUID: ' + fetch.id);
                 }
             })
             .catch(err => {
@@ -145,7 +164,7 @@ module.exports = {
                 orderRelay(ws, message.order.device, message.order.floor);
                 break;
             case Message.FETCH_INFO:
-                sendInfo(ws, message.fetch.type, message.fetch.id);
+                sendInfo(ws, message.fetch);
                 break;
             default:
                 console.warn(Moment().format() + ' Unhandled Mobile message: ' + JSON.stringify(message));
