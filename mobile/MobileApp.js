@@ -169,6 +169,7 @@ function getSavedDeviceOrders(device) {
         deviceOrders = new Map();
         savedOrders.set(device, deviceOrders);
     }
+    return deviceOrders;
 }
 
 module.exports = {
