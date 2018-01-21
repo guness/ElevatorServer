@@ -16,7 +16,7 @@ module.exports = {
             .then(function (response) {
                 // See the MessagingDevicesResponse reference documentation for
                 // the contents of response.
-                console.debug(Moment().format() + ' Successfully sent message: ' + response);
+                console.info(Moment().format() + ' Successfully sent message: ' + response);
             })
             .catch(function (error) {
                 console.warn(Moment().format() + ' Error sending message: ' + error);
