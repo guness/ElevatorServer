@@ -4,6 +4,7 @@ const WebSocket = require('ws');
 const Util = require('util');
 const Moment = require('moment');
 const MySQL = require('../utils/mysql-handler');
+const Firebase = require('../utils/firebase-handler');
 const Constants = require('../config/constants');
 const Message = require('../config/messageTypes');
 const Emitters = require('../utils/emitters');
@@ -34,8 +35,8 @@ Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
         deviceOrders.forEach(savedOrder => {
             if (savedOrder.floor === state.floor) {
                 // No need to keep deviceOrder, it is fulfilled and mobile is alert.
-                // TODO: use push to deliver
                 console.error("Must PUSH: " + JSON.stringify(savedOrder));
+                sendPush(savedOrder.user, state);
                 deviceOrders.delete(savedOrder.user);
             }
         });
@@ -87,7 +88,7 @@ function orderRelay(ws, device, floor) {
 }
 
 function sendGroupInfo(ws, group) {
-    MySQL.query('SELECT * from ?? WHERE group_id = ?;', [Constants.tableNames.BOARD, group.id])
+    MySQL.query('SELECT * FROM ?? WHERE group_id = ?;', [Constants.tableNames.BOARD, group.id])
         .then(results => {
             let elevators = [];
             results.forEach(result => {
@@ -132,7 +133,7 @@ function sendGroupInfo(ws, group) {
 
 function sendInfo(ws, fetch) {
     if (fetch.type === Constants.fetchTypes.GROUP) {
-        MySQL.query('SELECT * from ?? WHERE id = ?;', [Constants.tableNames.GROUP, fetch.id])
+        MySQL.query('SELECT * FROM ?? WHERE id = ?;', [Constants.tableNames.GROUP, fetch.id])
             .then(results => {
                 if (results.length === 1) {
                     let group = results[0];
@@ -146,7 +147,7 @@ function sendInfo(ws, fetch) {
             });
     } else if (fetch.type === Constants.fetchTypes.UUID) {
         //TODO: fetch on other things as well
-        MySQL.query('SELECT * from ?? WHERE uuid = ?;', [Constants.tableNames.GROUP, fetch.uuid])
+        MySQL.query('SELECT * FROM ?? WHERE uuid = ?;', [Constants.tableNames.GROUP, fetch.uuid])
             .then(results => {
                 if (results.length === 1) {
                     let group = results[0];
@@ -161,6 +162,21 @@ function sendInfo(ws, fetch) {
     } else {
         console.warn(Moment().format() + ' Unhandled fetch type: ' + type);
     }
+}
+
+function sendPush(username, payload) {
+    MySQL.query('SELECT token FROM ?? WHERE username = ?;', [Constants.tableNames.MOBILE, username])
+        .then(results => {
+            if (results.length === 1) {
+                let token = results[0];
+                Firebase.sendMessage(token, payload)
+            } else {
+                console.warn(Moment().format() + ' Fetching unregistered Mobile: ' + username);
+            }
+        })
+        .catch(err => {
+            console.error(Moment().format() + ' Error fetching Mobile: ' + err);
+        });
 }
 
 function getSavedDeviceOrders(device) {

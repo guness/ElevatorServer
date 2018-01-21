@@ -10,6 +10,7 @@ const state = new EventEmitter();
 
 const Constants = require('./config/constants');
 const MySQL = require('./utils/mysql-handler');
+const Firebase = require('./utils/firebase-handler');
 const Message = require('./config/messageTypes');
 const BoardApp = require('./board/BoardApp');
 const MobileApp = require('./mobile/MobileApp');
@@ -21,6 +22,7 @@ const wss = new WebSocket.Server({
     verifyClient: checkAuth
 });
 
+Firebase.start();
 MySQL.start().then(() => {
     MySQL.query('SELECT 1;')
         .then(() => {
