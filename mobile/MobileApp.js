@@ -7,16 +7,39 @@ const MySQL = require('../utils/mysql-handler');
 const Constants = require('../config/constants');
 const Message = require('../config/messageTypes');
 const Emitters = require('../utils/emitters');
+const SavedOrder = require('../models/SavedOrder');
 const BoardApp = require('../board/BoardApp');
 
 const mobileMap = new Map();
+const savedOrders = new Map();
 
 Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
+    let deviceOrders = getSavedDeviceOrders(device);
     mobileMap.forEach(mobile => {
+        let mobileUserName = mobile.user.name;
         if (mobile.user.device === device) {
-            sendState(mobile.ws, mobile.user.name, state);
+            sendState(mobile.ws, mobileUserName, state);
+            if (state.action === "STOP") {
+                let savedOrder = deviceOrders.get(mobileUserName);
+                if (savedOrder) {
+                    if (savedOrder.floor === state.floor) {
+                        // No need to keep deviceOrder, it is fulfilled and mobile is alert.
+                        deviceOrders.delete(mobileUserName);
+                    }
+                }
+            }
         }
     });
+    if (state.action === "STOP") {
+        deviceOrders.forEach(savedOrder => {
+            if (savedOrder.floor === state.floor) {
+                // No need to keep deviceOrder, it is fulfilled and mobile is alert.
+                // TODO: use push to deliver
+                console.error("Must PUSH: " + JSON.stringify(savedOrder));
+                deviceOrders.delete(savedOrder.user);
+            }
+        });
+    }
 });
 
 function sendState(ws, username, state) {
@@ -140,6 +163,14 @@ function sendInfo(ws, fetch) {
     }
 }
 
+function getSavedDeviceOrders(device) {
+    let deviceOrders = savedOrders.get(device);
+    if (!deviceOrders) {
+        deviceOrders = new Map();
+        savedOrders.set(device, deviceOrders);
+    }
+}
+
 module.exports = {
     onConnect(user, ws, req) {
         //ws.send('MobileApp, Hello: ' + username);
@@ -161,7 +192,10 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' stopped listening');
                 break;
             case Message.RELAY_ORDER:
-                orderRelay(ws, message.order.device, message.order.floor);
+                let order = new SavedOrder(user, message.order.device, message.order.floor);
+                let deviceOrders = getSavedDeviceOrders(order.device);
+                deviceOrders.set(order.user, order);
+                orderRelay(ws, order.device, order.floor);
                 break;
             case Message.FETCH_INFO:
                 sendInfo(ws, message.fetch);

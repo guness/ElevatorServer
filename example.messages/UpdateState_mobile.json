@@ -6,6 +6,7 @@
     "device": "UUID-1234-567-890",
     "busy": false,
     "direction": "UP",
+    "action": "PASS",
     "online": true
   }
 }
