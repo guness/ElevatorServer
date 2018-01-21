@@ -173,7 +173,6 @@ function sendPush(username, message) {
         .then(results => {
             if (results.length === 1) {
                 let mobile = results[0];
-                console.log("token for " + username + " is: " + mobile.token);
                 let payload = {
                     data: {
                         protocol: JSON.stringify(message)

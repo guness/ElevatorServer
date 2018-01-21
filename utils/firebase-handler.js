@@ -1,5 +1,6 @@
 'use strict';
 const admin = require('firebase-admin');
+const Moment = require('moment');
 
 const serviceAccount = require('../config/guness-elevator-firebase-adminsdk-tr05x-eff5f02539');
 
@@ -15,10 +16,10 @@ module.exports = {
             .then(function (response) {
                 // See the MessagingDevicesResponse reference documentation for
                 // the contents of response.
-                console.log("Successfully sent message:", response);
+                console.debug(Moment().format() + ' Successfully sent message: ' + response);
             })
             .catch(function (error) {
-                console.log("Error sending message:", error);
+                console.warn(Moment().format() + ' Error sending message: ' + error);
             });
 
     }
