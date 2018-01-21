@@ -193,9 +193,9 @@ module.exports = {
                 console.info(Moment().format() + ' User ' + user.name + ' stopped listening');
                 break;
             case Message.RELAY_ORDER:
-                let order = new SavedOrder(user, message.order.device, message.order.floor);
+                let order = new SavedOrder(user.name, message.order.device, message.order.floor);
                 let deviceOrders = getSavedDeviceOrders(order.device);
-                deviceOrders.set(order.user, order);
+                deviceOrders.set(user.name, order);
                 orderRelay(ws, order.device, order.floor);
                 break;
             case Message.FETCH_INFO:
