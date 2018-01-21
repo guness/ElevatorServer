@@ -164,11 +164,18 @@ function sendInfo(ws, fetch) {
     }
 }
 
-function sendPush(username, payload) {
+function sendPush(username, message) {
     MySQL.query('SELECT token FROM ?? WHERE username = ?;', [Constants.tableNames.MOBILE, username])
         .then(results => {
             if (results.length === 1) {
                 let token = results[0];
+                console.log("token for " + username + " is: " + token);
+                let payload = {
+                    data: {
+                        protocol: JSON.stringify(message)
+                    }
+                };
+
                 Firebase.sendMessage(token, payload)
             } else {
                 console.warn(Moment().format() + ' Fetching unregistered Mobile: ' + username);
