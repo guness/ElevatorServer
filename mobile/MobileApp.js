@@ -35,8 +35,12 @@ Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
         deviceOrders.forEach(savedOrder => {
             if (savedOrder.floor === state.floor) {
                 // No need to keep deviceOrder, it is fulfilled and mobile is alert.
-                console.error("Must PUSH: " + JSON.stringify(savedOrder));
-                sendPush(savedOrder.user, state);
+                const message = {
+                    _type: Message.UPDATE_STATE,
+                    version: 2,
+                    state: state
+                };
+                sendPush(savedOrder.user, message);
                 deviceOrders.delete(savedOrder.user);
             }
         });
