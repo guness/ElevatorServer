@@ -5,26 +5,23 @@
     "id": 1,
     "uuid": "UUID-12345-6789-0123-DemoGroup",
     "description": "Lorem Group",
+    "address": "Lorem ipsum dolor sit amet",
+    "latitude": 34.33,
+    "longitude": -23.12,
     "elevators": [
       {
         "id": 1,
         "device": "UUID-12345-6789-0123-12345",
         "min_floor": -2,
         "floor_count": 10,
-        "address": "Lorem ipsum dolor sit amet",
-        "description": "Main Elevator",
-        "latitude": 34.33,
-        "longitude": -23.12
+        "description": "Main Elevator"
       },
       {
         "id": 2,
         "device": "UUID-987-543-21-12312",
         "min_floor": -1,
         "floor_count": 6,
-        "address": "Lorem ipsum dolor sit amet",
-        "description": "Side Elevator",
-        "latitude": 34.33,
-        "longitude": -23.12
+        "description": "Side Elevator"
       }
     ]
   }

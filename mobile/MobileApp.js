@@ -101,10 +101,7 @@ function sendGroupInfo(ws, group) {
                     device: result.username,
                     min_floor: result.min_floor,
                     floor_count: result.floor_count,
-                    address: result.address,
-                    description: result.description,
-                    latitude: result.latitude,
-                    longitude: result.longitude
+                    description: result.description
                 };
                 elevators.push(elevator)
             });
@@ -115,6 +112,9 @@ function sendGroupInfo(ws, group) {
                     id: group.id,
                     uuid: group.uuid,
                     description: group.description,
+                    address: group.address,
+                    latitude: group.latitude,
+                    longitude: group.longitude,
                     elevators: elevators
                 }
             };
