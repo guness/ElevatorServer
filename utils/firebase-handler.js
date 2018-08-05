@@ -12,7 +12,11 @@ module.exports = {
         });
     },
     sendMessage(token, payload) {
-        const options = {contentAvailable: true};
+        const options = {
+            timeToLive: 60,
+            priority: "high",
+            contentAvailable: true
+        };
         admin.messaging().sendToDevice(token, payload, options)
             .then(function (response) {
                 // See the MessagingDevicesResponse reference documentation for
