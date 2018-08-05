@@ -12,7 +12,8 @@ module.exports = {
         });
     },
     sendMessage(token, payload) {
-        admin.messaging().sendToDevice(token, payload)
+        const options = {contentAvailable: true};
+        admin.messaging().sendToDevice(token, payload, options)
             .then(function (response) {
                 // See the MessagingDevicesResponse reference documentation for
                 // the contents of response.
@@ -21,6 +22,5 @@ module.exports = {
             .catch(function (error) {
                 console.warn(Moment().format() + ' Error sending message: ' + error);
             });
-
     }
 };
