@@ -50,6 +50,6 @@ module.exports = {
                 badge: 42,
             }
         };
-        sendMessage(token, dataPayload, iOSPayload)
+        this.sendMessage(token, dataPayload, iOSPayload)
     }
 };
