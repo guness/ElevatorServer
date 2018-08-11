@@ -47,7 +47,7 @@ module.exports = {
                     title: 'Your elevator has arrived',
                     body: 'Floor ' + floor,
                 },
-                badge: 42,
+                sound: "elevator_ding.mp3"
             }
         };
         this.sendMessage(token, dataPayload, iOSPayload)
