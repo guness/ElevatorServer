@@ -14,8 +14,8 @@ module.exports = {
     sendMessage(token, dataPayload, iOSPayload) {
         let message = {
             data: dataPayload,
-            priority: "high",
             android: {
+                priority: "high",
                 ttl: 60 * 1000
             },
             apns: {
