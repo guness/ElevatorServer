@@ -40,7 +40,7 @@ Emitters.getStateEmitter().on(Message.UPDATE_STATE, (device, state) => {
                     version: 2,
                     state: state
                 };
-                sendPush(savedOrder.user, message);
+                sendArrivedMessage(savedOrder.user, message, savedOrder.floor);
                 deviceOrders.delete(savedOrder.user);
             }
         });
@@ -168,18 +168,16 @@ function sendInfo(ws, fetch) {
     }
 }
 
-function sendPush(username, message) {
+function sendArrivedMessage(username, message, floor) {
     MySQL.query('SELECT token FROM ?? WHERE username = ?;', [Constants.tableNames.MOBILE, username])
         .then(results => {
             if (results.length === 1) {
                 let mobile = results[0];
                 let payload = {
-                    data: {
-                        protocol: JSON.stringify(message)
-                    }
+                    protocol: JSON.stringify(message)
                 };
 
-                Firebase.sendMessage(mobile.token, payload)
+                Firebase.sendArrivedMessage(mobile.token, payload, floor)
             } else {
                 console.warn(Moment().format() + ' Fetching unregistered Mobile: ' + username);
             }
